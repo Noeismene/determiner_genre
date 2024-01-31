@@ -30,6 +30,7 @@ script_dir = os.path.dirname(__file__)
 source = input("Entrer le nom du fichier CSV à traiter, avec son extension. Ce fichier doit se trouver dans le même répertoire que le script : ")
 source = os.path.join(script_dir, source)
 result = input("Comment souhaitez-vous nommer le fichier de résultat ?\n")
+print("merci de patienter")
 
 with open(source, 'r', encoding='utf-8', newline='') as source_file, open('prenoms_feminins.csv', 'r', encoding='utf-8', newline='') as female_file, open('prenoms_masculins.csv', 'r', encoding='utf-8', newline='') as male_file, open(f'{result}.csv', 'w', newline='', encoding='utf-8') as output_file:
     source_reader = csv.reader(source_file, delimiter=';')
@@ -40,9 +41,6 @@ with open(source, 'r', encoding='utf-8', newline='') as source_file, open('preno
     # Convertir le fichier de référence en une liste de chaînes en minuscules avec la fonction lower() appliquée à row[0] (la première colonne)
     female_list = [row[0].lower() for row in female_reader]
     male_list = [row[0].lower() for row in male_reader]
-
-    # Définir les prénoms mixtes
-    uncertain_list = ["marie","maria","michele","placide","valerie"]
 
     # Parcourir chaque ligne de source_file, cellule de la colonne row[4]
     for source_row in source_reader:
@@ -58,18 +56,8 @@ with open(source, 'r', encoding='utf-8', newline='') as source_file, open('preno
         # Vérifier si le prénom est féminin
         elif find_name(source_string, female_list):
             output_writer.writerow([source_row[0],source_row[1],source_row[2],source_row[3],source_string, 'féminin'])
-        # Si présence d'un prénom mixte et que les autres prénoms n'ont pas été trouvés, demander
-        elif find_name(source_string, uncertain_list):
-            answer = input(f"l'un des prénoms de cette personne est mixte et les autres prénoms n'ont pas été trouvés dans les listes, "
-                           f"s'agit-il d'une femme (f) ou d'un homme (m) ?\n {source_string}\n")
-            if answer == "f":
-                output_writer.writerow([source_row[0],source_row[1],source_row[2],source_row[3],source_string, 'féminin'])
-            elif answer == "m":
-                output_writer.writerow([source_row[0],source_row[1],source_row[2],source_row[3],source_string, 'masculin'])
-            else:
-                output_writer.writerow([source_row[0],source_row[1],source_row[2],source_row[3],source_string, 'incertain'])
-        # Sinon, indiquer "masculin"
+        # Sinon, indiquer "à contrôler"
         else:
-            output_writer.writerow([source_row[0],source_row[1],source_row[2],source_row[3],source_string, 'masculin'])
+            output_writer.writerow([source_row[0],source_row[1],source_row[2],source_row[3],source_string, 'à contrôler'])
 
-input("Pressez Entrée pour terminer")
+input("Programme terminé. Pressez Entrée.")
