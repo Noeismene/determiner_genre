@@ -50,14 +50,25 @@ with open(source, 'r', encoding='utf-8', newline='') as source_file, open('preno
         # En-têtes
         if source_string == "intitule":
             output_writer.writerow([source_row[0],source_row[1],source_row[2],source_row[3],source_string, 'genre'])
-        # Vérifier si le prénom est masculin
-        elif find_name(source_string, male_list):
-            output_writer.writerow([source_row[0],source_row[1],source_row[2],source_row[3],source_string, 'masculin'])
-        # Vérifier si le prénom est féminin
-        elif find_name(source_string, female_list):
-            output_writer.writerow([source_row[0],source_row[1],source_row[2],source_row[3],source_string, 'féminin'])
-        # Sinon, indiquer "à contrôler"
+        
+        # MODIFICATIONS POUR GÉRER LES PRÉNOMS ÉPICÈNES
         else:
-            output_writer.writerow([source_row[0],source_row[1],source_row[2],source_row[3],source_string, 'à contrôler'])
+            # Vérifier si le prénom est masculin
+            is_male = find_name(source_string, male_list)
+            # Vérifier si le prénom est féminin
+            is_female = find_name(source_string, female_list)
+
+            # Si le prénom est trouvé dans les deux listes, le marquer comme épicène
+            if is_male and is_female:
+                output_writer.writerow([source_row[0],source_row[1],source_row[2],source_row[3],source_string, 'épicène'])
+            # Sinon, vérifier si le prénom est uniquement masculin
+            elif is_male:
+                output_writer.writerow([source_row[0],source_row[1],source_row[2],source_row[3],source_string, 'masculin'])
+            # Sinon, vérifier si le prénom est uniquement féminin
+            elif is_female:
+                output_writer.writerow([source_row[0],source_row[1],source_row[2],source_row[3],source_string, 'féminin'])
+            # Sinon, indiquer "à contrôler"
+            else:
+                output_writer.writerow([source_row[0],source_row[1],source_row[2],source_row[3],source_string, 'à contrôler'])
 
 input("Programme terminé. Pressez Entrée.")
